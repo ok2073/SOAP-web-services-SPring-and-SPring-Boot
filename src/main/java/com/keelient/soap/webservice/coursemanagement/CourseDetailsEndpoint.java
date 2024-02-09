@@ -3,7 +3,6 @@ package com.keelient.soap.webservice.coursemanagement;
 import com.keelient.soap.webservice.coursemanagement.bean.Course;
 import com.keelient.soap.webservice.coursemanagement.service.CourseDetailsService;
 import courses.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -12,6 +11,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import java.util.List;
 
+//http://localhost:8080/ws/courses.wsdl
 @Endpoint
 public class CourseDetailsEndpoint {
 
@@ -22,6 +22,11 @@ public class CourseDetailsEndpoint {
     @ResponsePayload
     public GetCourseDetailsResponse processCourseDetailsRequest(@RequestPayload GetCourseDetailsRequest request) {
         Course course = courseDetailsService.findById(request.getId());
+
+        if (course == null) {
+            throw new CourseNotFoundException("Invalid course id " + request.getId());
+        }
+
         return mapCourseDetails(course);
     }
 
